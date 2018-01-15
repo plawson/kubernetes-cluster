@@ -16,6 +16,5 @@ d-i partman-auto-lvm/no_boot            boolean true
 d-i partman-md/device_remove_md         boolean true
 d-i partman-md/confirm                  boolean true
 d-i partman-md/confirm_nooverwrite      boolean true
-d-i netcfg/get_hostname string		kube-node10
-#d-i preseed/late_command string cp /cdrom/post-install.sh /target/tmp; in-target /tmp/post-install.sh
-d-i preseed/late_command string cp /cdrom/post-install.sh /target; in-target /bin/bash /post-install.sh
+d-i netcfg/get_hostname string		ahostname
+d-i preseed/late_command string cp /cdrom/post-install.sh /target/tmp; in-target /bin/bash /tmp/post-install.sh
