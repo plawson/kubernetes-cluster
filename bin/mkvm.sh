@@ -114,7 +114,7 @@ if [[ -z "${VM_OWNER// }" ]]; then
 	usage
 fi
 
-if [[ -z "${MAC_ADDRESS}" ]]; then
+if [[ -z "${MAC_ADDRESS// }" ]]; then
 	MAC_ADDRESS=""
 fi
 
@@ -123,5 +123,5 @@ if [[ ${USER} == "root" ]]; then
 	generate_iso $VM_NAME $VM_OWNER
 	sudo -u $VM_OWNER /bin/bash $0 --name $VM_NAME --user $VM_OWNER --mac $MAC_ADDRESS
 else
-	create_vm $VM_NAME $VM_OWNER
+	create_vm $VM_NAME $VM_OWNER $MAC_ADDRESS
 fi
