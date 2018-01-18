@@ -24,6 +24,10 @@ function generate_iso {
 
 	# Set host name
 	sed -r -i 's@^d-i netcfg/get_hostname string.*$@d-i netcfg/get_hostname string\t\t'${VM_NAME}'@' /opt/ubuntuiso/ks.preseed
+	# Customize post install script
+	THE_DIR=$(dirname $0)
+	cp -f $THE_DIR/../unattended_iso_customization/post-install.sh /opt/ubuntuiso/post-install.sh
+	chmod 755 /opt/ubuntuiso/post-install.sh
 	sed -r -i 's@^new_hostname.*$@new_hostname="'${VM_NAME}'"@' /opt/ubuntuiso/post-install.sh
 
 	# Generate iso
