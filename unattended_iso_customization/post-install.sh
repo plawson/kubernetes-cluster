@@ -1,7 +1,9 @@
 ###########################################
 ############# Change Hostname #############
 ###########################################
-new_hostname="kube-node10"
+# The new_hostname variable is updated by the iso 
+# builder script
+new_hostname="will-be-changed-by-iso-builder"
 hostn=$(cat /etc/hostname)
 sudo sed -i "s/$hostn/$new_hostname/g" /etc/hosts
 sudo sed -i "s/$hostn/$new_hostname/g" /etc/hostname
@@ -44,3 +46,8 @@ sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 ############# Turn off Swap  ##############
 ###########################################
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
+###########################################
+########## Customize /etc/host  ###########
+###########################################
+# I'm using static IPs. If you don't, comment in the following line
+cat /tmp/vm_hosts | grep -v $new_hostname >>/etc/hosts

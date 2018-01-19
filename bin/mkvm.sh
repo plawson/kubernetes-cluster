@@ -15,6 +15,7 @@ function generate_iso {
 	fi
 	VM_NAME=$1
 	VM_OWNER=$2
+	THE_DIR=$(dirname $0)
 
 	if [[ ${USER} != "root" ]]; then
 		echo ""
@@ -23,12 +24,14 @@ function generate_iso {
 	fi
 
 	# Set host name
+	cp -f $THE_DIR/../unattended_iso_customization/ks.preseed /opt/ubuntuiso/ks.preseed
 	sed -r -i 's@^d-i netcfg/get_hostname string.*$@d-i netcfg/get_hostname string\t\t'${VM_NAME}'@' /opt/ubuntuiso/ks.preseed
 	# Customize post install script
-	THE_DIR=$(dirname $0)
 	cp -f $THE_DIR/../unattended_iso_customization/post-install.sh /opt/ubuntuiso/post-install.sh
 	chmod 755 /opt/ubuntuiso/post-install.sh
 	sed -r -i 's@^new_hostname.*$@new_hostname="'${VM_NAME}'"@' /opt/ubuntuiso/post-install.sh
+	# Copy hosts file customization
+	cp -f $THE_DIR/../unattended_iso_customization/vm_hosts /opt/ubuntuiso/vm_hosts
 
 	# Generate iso
 	rm -f /home/$VM_OWNER/virtual_machines/my_iso/ubuntu-16.04.3-server-amd64-silent_$VM_NAME.iso
@@ -76,6 +79,8 @@ function create_vm {
 	vboxmanage storagectl $VM_NAME --name "IDE Controller" --add ide
 	vboxmanage storageattach $VM_NAME --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium /home/$VM_OWNER/virtual_machines/my_iso/ubuntu-16.04.3-server-amd64-silent_$VM_NAME.iso
 	vboxmanage startvm $VM_NAME --type headless
+	# Comment the previousline and uncomment the below command when debugging your unattended iso install.
+	# Note that uncommenting the below line will display the X11 install UI. In that case set your $DISPLAY variable accordingly before running the script or the istall might hang.
 	#vboxmanage startvm $VM_NAME
 }
 

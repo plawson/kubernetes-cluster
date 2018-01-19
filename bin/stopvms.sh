@@ -21,7 +21,6 @@ if [[ "$1" == "all" ]]; then
 			stop_vm $VM
 		fi
 	done
-	exit
 
 elif [[ "$1" == "nodes" ]]; then
 	VMS=$(vboxmanage list vms | grep kube-node | awk '{print $1}' | sed -e 's/"//g')
@@ -32,7 +31,6 @@ elif [[ "$1" == "nodes" ]]; then
 			stop_vm $VM
 		fi
 	done
-	exit
 
 elif [[ "$1" == "master" ]]; then
 	VMS=$(vboxmanage list vms | grep kube-master | awk '{print $1}' | sed -e 's/"//g')
@@ -52,5 +50,4 @@ else
 	else
 		echo "VM $1 is not running"
 	fi
-	exit
 fi
