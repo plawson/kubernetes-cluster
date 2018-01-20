@@ -43,6 +43,10 @@ sudo chmod 755 /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 ###########################################
+########## Install NFS client  ############
+###########################################
+sudo apt-get install -y nfs-common
+###########################################
 ############# Turn off Swap  ##############
 ###########################################
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
