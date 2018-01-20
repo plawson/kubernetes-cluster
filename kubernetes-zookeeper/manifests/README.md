@@ -2,28 +2,27 @@
 Three different manifests are provided as templates based on different uses cases for a ZooKeeper ensemble.
 
 1. [zookeeper.yaml](zookeeper.yaml) provides a manifest that is close to production readiness.
-    - It provides 5 servers with a disruption budget of 1 planned disruption. This ensemble will tolerate 1 planned and 
+    - It provides 3 servers with a disruption budget of 1 planned disruption. This ensemble will tolerate 1 planned and 
     1 unplanned failure.
     - Each server will consume 4 GiB of memory, 3 Gib of which will be dedicated to the ZooKeeper JVM heap.
     - Each server will consume 2 CPUs.
     - Each server will consume 1 Persistent Volume with 250 GiB of storage.
     - You can tune the parameters as nessecary to suite the needs of your deployment.
-    - **The total footprint is 5 Nodes, 10 CPUs, 20 GiB memory, 1250 GiB disk**
+    - **The total footprint is 3 Nodes, 6 CPUs, 12 GiB memory, 750 GiB disk**
     
 ## Usage 
 This section goes over the basics of creating and updating a ZooKeeper ensemble 
-on a Kubernetes 1.7 cluster. You can clone this repo, or simply download one or 
-more of the manifests. You will need a working cluster and a 1.7 version of 
+on a Kubernetes 1.9.1 cluster. You can clone this repo, or simply download one or 
+more of the manifests. You will need a working cluster and a 1.9.1 version of 
 kubectl installed. The size of the cluster depends on which manifest you 
-choose to deploy. Below, we deploy 
-[zookeeper_mini.yaml](manifests/zookeeper_mini.yaml).
+choose to deploy.
 
 ### Creating an Ensemble
 To create an ensemble use `kubectl apply` to create the components in the 
 zookeeper_mini.yaml manifest.
 
 ```bash
-kubectl apply -f zookeeper_mini.yaml 
+kubectl apply -f zookeeper.yaml 
 service "zk-hs" configured
 service "zk-cs" configured
 poddisruptionbudget "zk-pdb" configured
@@ -65,7 +64,8 @@ ZooKeeper servers, you should only plan for one planned disruption. With 5 or
 more servers you can tolerate an unplanned disruption that occurs concurrently 
 with a planned disruption.
 1. A StatefulSet, `zk`, is created to launch the ZooKeeper servers, each in its 
-own Pod, and each with unique and stable network identities and storage.
+own Pod, and each with unique and stable network identities and storage. The image
+points to a local private registry. Modify this value tou suit your environment.
 
 
 ### Testing the Ensemble
@@ -105,7 +105,7 @@ numChildren = 0
 ### Updating the StatefulSet
 
 You can't scale a ZooKeeper ensemble. However, You can update all of the configuration and resource requests. Edit the 
-zookeeper_mini.yaml manifest to decrease the memory resource request and the jvm heap size.
+zookeeper.yaml manifest to decrease the memory resource request and the jvm heap size.
 
 ```yaml
  name: kubernetes-zookeeper
@@ -175,9 +175,9 @@ The StatefulSet controller will update each Pod in the StatefulSet, one at a tim
 Pod to be Running and Ready before updating the next Pod.
     
 ## Manifest Components
-Each manifest contains a Headless Service to control the network domain of the ensemble, a client Service to load 
-balance client connections to available servers, and a StatefulSet to provide the required number of unique Pods. 
-zookeeper.yaml and zookeeper_mini.yaml additionally contain a PodDisruptionBudget to manage planned disruptions.
+The manifest contains a Headless Service to control the network domain of the ensemble, a client Service to load 
+balance client connections to available servers, a StatefulSet to provide the required number of unique Pods,
+and a PodDisruptionBudget to manage planned disruptions.
 
 ## Headless Service
 The `zk-hs` Headless Service will manage the domain of the ensemble. It has named ports, one for leader election and 
@@ -324,7 +324,7 @@ spec:
 ```
 
 ## PodDisruptionBudget
-A PodDisruptionBudget is created, except in the zookeeper_micro.yaml manifest, to advertise the number of Pods that can 
+A PodDisruptionBudget is created to advertise the number of Pods that can 
 be safely drained or evicted. When administrators apply managed node or base image updates, if they cordon and drain the 
 node appropriately, this will ensure that the ensemble remains available throughout the procedure. For ZooKeeper, the 
 correct MaxUnavailable setting is always 1. Even with the 5 server ensemble deployed by zookeeper.yaml, we want to 
