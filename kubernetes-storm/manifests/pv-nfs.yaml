@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs_storm
+spec:
+  capacity:
+    storage: 750Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.1.100
+    path: "/synology/nfs/storm"
