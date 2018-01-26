@@ -30,6 +30,10 @@ function generate_iso {
 	cp -f $THE_DIR/../unattended_iso_customization/post-install.sh /opt/ubuntuiso/post-install.sh
 	chmod 755 /opt/ubuntuiso/post-install.sh
 	sed -r -i 's@^new_hostname.*$@new_hostname="'${VM_NAME}'"@' /opt/ubuntuiso/post-install.sh
+	# Docker customization
+	cp -f $THE_DIR/../unattended_iso_customization/custdocker /opt/ubuntuiso/custdocker
+	cp -f $THE_DIR/../unattended_iso_customization/daemon.json /opt/ubuntuiso/daemon.json
+	sed -r -i 's@your_local_insecure_registry@192\.168\.1\.101:5000@' /opt/ubuntuiso/daemon.json
 	# Copy hosts file customization
 	cp -f $THE_DIR/../unattended_iso_customization/vm_hosts /opt/ubuntuiso/vm_hosts
 
@@ -68,7 +72,9 @@ function create_vm {
 	vboxmanage createvm --name $VM_NAME --basefolder /home/$VM_OWNER/virtual_machines --register
 	vboxmanage modifyvm $VM_NAME --ostype Ubuntu_64
 	vboxmanage modifyvm $VM_NAME --memory 15360
-	vboxmanage modifyvm $VM_NAME --cpus 2
+	vboxmanage modifyvm $VM_NAME --acpi on
+	vboxmanage modifyvm $VM_NAME --ioapic on
+	vboxmanage modifyvm $VM_NAME --cpus 3
 	vboxmanage modifyvm $VM_NAME --nic1 bridged --bridgeadapter1 enp5s0    
 	if [[ ! -z "${MAC_ADDRESS}" ]]; then
 		vboxmanage modifyvm $VM_NAME --macaddress1 $MAC_ADDRESS

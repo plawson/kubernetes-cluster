@@ -17,4 +17,4 @@ d-i partman-md/device_remove_md         boolean true
 d-i partman-md/confirm                  boolean true
 d-i partman-md/confirm_nooverwrite      boolean true
 d-i netcfg/get_hostname string		ahostname
-d-i preseed/late_command string cp /cdrom/post-install.sh /target/tmp; cp /cdrom/vm_hosts /target/tmp; in-target /bin/bash /tmp/post-install.sh
+d-i preseed/late_command string cp /cdrom/post-install.sh /target/tmp; cp /cdrom/vm_hosts /target/tmp; cp /cdrom/custdocker /target/tmp/custdocker; cp /cdrom/daemon.json /target/tmp/daemon.json; in-target /bin/bash /tmp/post-install.sh
