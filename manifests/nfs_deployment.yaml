@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: nfs-client-provisioner
-          image: localhost:5000/plawson/nfs-client-provisioner
+          image: 192.168.1.101:5000/plawson/nfs-client-provisioner
           volumeMounts:
             - name: nfs-client-root
               mountPath: /persistentvolumes
@@ -23,9 +23,9 @@ spec:
             - name: NFS_SERVER
               value: 192.168.1.100
             - name: NFS_PATH
-              value: /synology/nfs
+              value: /synology/nfs/dynamicpv
       volumes:
         - name: nfs-client-root
           nfs:
             server: 192.168.1.100
-            path: /synology/nfs
+            path: /synology/nfs/dynamicpv
