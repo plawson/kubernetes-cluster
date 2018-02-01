@@ -40,6 +40,11 @@ sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 ###########################################
 sudo apt-get install -y nfs-common
 ###########################################
+#######  Install python3 packages  ########
+###########################################
+sudo apt-get -y install python3-pip
+sudo pip3 install websocket-client
+###########################################
 ############# Turn off Swap  ##############
 ###########################################
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
