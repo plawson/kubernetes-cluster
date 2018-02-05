@@ -1,2 +1,2 @@
 # kubernetes-cluster
-Kubernetes cluster configuration script
+Kubernetes cluster configuration testing scripts for Data Architects (Zookeeper, kafka, Storm, Elasticsearch, Kibana)
