@@ -1,0 +1,108 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-hs
+  labels:
+    component: elasticsearch
+    role: data
+spec:
+  ports:
+  - port: 9300
+    name: transport
+  clusterIP: None
+  selector:
+    component: elsaticsearch
+    role: data
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: es-pdb
+spec:
+  selector:
+    matchLabels:
+      component: elasticsearch
+      role: data
+  maxUnavailable: 1
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: es-data
+spec:
+  selector:
+    matchLabels:
+      component: elasticsearch
+      role: data
+  serviceName: es-hs
+  replicas: 3
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+        role: data
+    spec:
+      serviceAccount: elasticsearch
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "component"
+                    operator: In
+                    values:
+                    - elesticsearch
+                  - key: "role"
+                    operator: In
+                    values:
+                    - data
+              topologyKey: "kubernetes.io/hostname"
+      terminationGracePeriodSeconds: 300
+      initContainers:
+      - name: init-sysctl
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+      containers:
+      - name: es-data
+        securityContext:
+          capabilities:
+            add:
+              - IPC_LOCK
+        image: 192.168.1.101:5000/plawson/kubernetes-elasticsearch:5.6.4
+        env:
+        - name: KUBERNETES_CA_CERTIFICATE_FILE
+          value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: "CLUSTER_NAME"
+          value: "myesdb"
+        - name: NODE_MASTER
+          value: "false"
+        - name: HTTP_ENABLE
+          value: "false"
+        ports:
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: nfs-es
+  volumeClaimTemplates:
+  - metadata:
+      name: nfs-es
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      resources:
+        requests:
+          storage: 250Gi
