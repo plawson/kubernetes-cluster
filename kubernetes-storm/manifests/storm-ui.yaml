@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storm-ui
+  labels:
+    name: storm-ui
+spec:
+  ports:
+  - port: 8080
+    targetPort: storm-ui-http
+    protocol: TCP
+    nodePort: 32750
+  type: NodePort
+  selector:
+    name: storm-ui
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storm-ui
+  labels:
+    name: storm-ui
+spec:
+  containers:
+  - name: storm-ui
+    image: 192.168.1.101:5000/plawson/kubernetes-storm-ui
+    ports:
+    - name: storm-ui-http
+      containerPort: 8080
+    resources:
+      limits:
+        cpu: "0.1"

@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nimbus
+  labels:
+    name: nimbus
+spec:
+  ports:
+  - port: 6627
+  selector:
+    name: nimbus
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nimbus
+  labels:
+    name: nimbus
+spec:
+  containers:
+  - name: nimbus
+    image: 192.168.1.101:5000/plawson/kubernetes-storm-nimbus
+    ports:
+    - containerPort: 6627
+    resources:
+      limits:
+        cpu: "0.1"
