@@ -44,6 +44,7 @@ sudo apt-get install -y nfs-common
 ###########################################
 sudo apt-get -y install python3-pip
 sudo pip3 install websocket-client
+sudo pip3 install kafka-python
 ###########################################
 ############# Turn off Swap  ##############
 ###########################################
