@@ -23,6 +23,3 @@ spec:
     image: 192.168.1.101:5000/plawson/kubernetes-storm-nimbus
     ports:
     - containerPort: 6627
-    resources:
-      limits:
-        cpu: "0.1"
