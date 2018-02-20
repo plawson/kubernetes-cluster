@@ -6,10 +6,11 @@ RUN set -ex \
     && apt-get install -y python2.7 \
     && apt-get install -y python3.5 \
     && apt-get install -y python3-pip \
-    && ln -s /usr/bin/python3 /usr/bin/python
+    && ln -s /usr/bin/python2.7 /usr/bin/python \
+    && apt-get install -y vim
 
 RUN set -ex \
-    && curl -s http://apache.mediamirrors.org/storm/apache-storm-1.1.1/apache-storm-1.1.1.tar.gz | \
+    && curl -s https://archive.apache.org/dist/storm/apache-storm-1.1.1/apache-storm-1.1.1.tar.gz | \
        tar zxf - -C /opt && \
        mv /opt/apache-storm-1.1.1 /opt/apache-storm
 

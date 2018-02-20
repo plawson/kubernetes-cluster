@@ -14,6 +14,7 @@ RUN set -x \
     && apt-get install -y python3.5 \
     && apt-get install -y python3-pip \
     && ln -s /usr/bin/python3 /usr/bin/python \
+    && apt-get install -y vim \
     && wget -q "http://www.apache.org/dist/kafka/$KAFKA_VERSION/$KAFKA_DIST.tgz" \
     && wget -q "http://www.apache.org/dist/kafka/$KAFKA_VERSION/$KAFKA_DIST.tgz.asc" \
     && wget -q "http://kafka.apache.org/KEYS" \
