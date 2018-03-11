@@ -10,8 +10,8 @@ RUN set -ex \
     && apt-get install -y vim
 
 RUN set -ex \
-    && curl -s https://archive.apache.org/dist/storm/apache-storm-1.1.1/apache-storm-1.1.1.tar.gz | \
+    && curl -s http://apache.mediamirrors.org/storm/apache-storm-1.1.2/apache-storm-1.1.2.tar.gz | \
        tar zxf - -C /opt && \
-       mv /opt/apache-storm-1.1.1 /opt/apache-storm
+       mv /opt/apache-storm-1.1.2 /opt/apache-storm
 
 ADD configure.sh /

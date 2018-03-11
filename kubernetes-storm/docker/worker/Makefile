@@ -1,4 +1,4 @@
-VERSION=1.1.1
+VERSION=1.1.2
 PROJECT=localhost:5000/plawson
 
 all: build
