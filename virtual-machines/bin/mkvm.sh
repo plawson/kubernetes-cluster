@@ -1,7 +1,7 @@
 #/bin/bash
 
 function usage {
-	echo "$0: [-h] | --name VM_NAME --user USERNAME [--mac MAC_ADDRESS]"
+	echo "$0: [-h] | --name VM_NAME --user USERNAME [--mac MAC_ADDRESS] [--cpu #_CPU]"
 	exit
 }
 
@@ -36,6 +36,8 @@ function generate_iso {
 	sed -r -i 's@your_local_insecure_registry@192\.168\.1\.101:5000@' /opt/ubuntuiso/daemon.json
 	# Copy hosts file customization
 	cp -f $THE_DIR/../unattended_iso_customization/vm_hosts /opt/ubuntuiso/vm_hosts
+	# Copy sudoers
+	cp -f $THE_DIR/../unattended_iso_customization/k8s /opt/ubuntuiso/k8s
 
 	# Generate iso
 	rm -f /home/$VM_OWNER/virtual_machines/my_iso/ubuntu-16.04.3-server-amd64-silent_$VM_NAME.iso
@@ -54,7 +56,8 @@ function create_vm {
         fi
         VM_NAME=$1
         VM_OWNER=$2
-	MAC_ADDRESS=$3
+	VM_CPU=${3:-3}
+	MAC_ADDRESS=$4
 
 	if [[ ! -f /home/$VM_OWNER/virtual_machines/my_iso/ubuntu-16.04.3-server-amd64-silent_$VM_NAME.iso ]]; then
 		echo ""
@@ -71,10 +74,10 @@ function create_vm {
 
 	vboxmanage createvm --name $VM_NAME --basefolder /home/$VM_OWNER/virtual_machines --register
 	vboxmanage modifyvm $VM_NAME --ostype Ubuntu_64
-	vboxmanage modifyvm $VM_NAME --memory 15360
+	vboxmanage modifyvm $VM_NAME --memory 31744
 	vboxmanage modifyvm $VM_NAME --acpi on
 	vboxmanage modifyvm $VM_NAME --ioapic on
-	vboxmanage modifyvm $VM_NAME --cpus 3
+	vboxmanage modifyvm $VM_NAME --cpus ${VM_CPU}
 	vboxmanage modifyvm $VM_NAME --nic1 bridged --bridgeadapter1 enp5s0    
 	if [[ ! -z "${MAC_ADDRESS}" ]]; then
 		vboxmanage modifyvm $VM_NAME --macaddress1 $MAC_ADDRESS
@@ -110,6 +113,11 @@ do
 		shift # past argument
 		shift # past value
 		;;
+		--cpu)
+		VM_CPU="$2"
+		shift # past argument
+		shift # past value
+		;;
 		-h)
 		usage
 		;;
@@ -133,10 +141,14 @@ if [[ -z "${MAC_ADDRESS// }" ]]; then
 	MAC_ADDRESS=""
 fi
 
+if [[ -z "${VM_CPU// }" ]]; then
+	VM_CPU=""
+fi
+
 
 if [[ ${USER} == "root" ]]; then
 	generate_iso $VM_NAME $VM_OWNER
-	sudo -u $VM_OWNER /bin/bash $0 --name $VM_NAME --user $VM_OWNER --mac $MAC_ADDRESS
+	sudo -u $VM_OWNER /bin/bash $0 --name $VM_NAME --user $VM_OWNER --mac $MAC_ADDRESS --cpu $VM_CPU
 else
-	create_vm $VM_NAME $VM_OWNER $MAC_ADDRESS
+	create_vm $VM_NAME $VM_OWNER $VM_CPU $MAC_ADDRESS
 fi

@@ -1,14 +1,14 @@
-192.168.1.57	kube-master1
-192.168.1.59	kube-node01
-192.168.1.60	kube-node02
-192.168.1.61	kube-node03
-192.168.1.63	kube-node04
-192.168.1.62	kube-node05
-192.168.1.64	kube-node06
-192.168.1.66	kube-node07
-192.168.1.67	kube-node08
-192.168.1.65	kube-node09
-192.168.1.68	kube-node10
-192.168.1.18	kube-node11
+192.168.1.57	k8s-master1
+192.168.1.59	k8s-node01
+192.168.1.60	k8s-node02
+192.168.1.61	k8s-node03
+192.168.1.63	k8s-node04
+192.168.1.62	k8s-node05
+192.168.1.64	k8s-node06
+192.168.1.66	k8s-node07
+192.168.1.67	k8s-node08
+192.168.1.65	k8s-node09
+192.168.1.68	k8s-node10
+192.168.1.18	k8s-node11
 
 192.168.1.101	litsrv01	# VM host

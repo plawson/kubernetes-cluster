@@ -23,7 +23,7 @@ if [[ "$1" == "all" ]]; then
 	done
 
 elif [[ "$1" == "nodes" ]]; then
-	VMS=$(vboxmanage list vms | grep kube-node | awk '{print $1}' | sed -e 's/"//g')
+	VMS=$(vboxmanage list vms | grep k8s-node | awk '{print $1}' | sed -e 's/"//g')
 	for VM in $VMS
 	do
 		if [[ $(is_vm_running $VM) -eq 0 ]];then
@@ -33,7 +33,7 @@ elif [[ "$1" == "nodes" ]]; then
 	done
 
 elif [[ "$1" == "master" ]]; then
-	VMS=$(vboxmanage list vms | grep kube-master | awk '{print $1}' | sed -e 's/"//g')
+	VMS=$(vboxmanage list vms | grep k8s-master | awk '{print $1}' | sed -e 's/"//g')
 	for VM in $VMS
 	do
 		if [[ $(is_vm_running $VM) -eq 0 ]];then
